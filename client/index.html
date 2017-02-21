@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link href="css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
   <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="https://fonts.googleapis.com/css?family=Candal|Carter+One|Fugaz+One|Josefin+Sans|Quicksand" rel="stylesheet">
   <script src="https://use.fontawesome.com/f5f2e38ee4.js"></script>
 </head>
 <body>
@@ -59,7 +60,7 @@
                   </div>
                 </div>
                 <div id="map" style="width:100%; height:400px;"></div>
-                <button class="waves-effect waves-light btn" v-on:click="addHouse"><i class="material-icons left">input</i>button</button>
+                <button class="waves-effect waves-light btn" v-on:click="addHouse"><i class="material-icons left">input</i>Add House</button>
               </form>
             </div>
           </div>
@@ -71,29 +72,104 @@
       <div class="row">
         <div class="col s12">
           <div class="card white">
-            <div class="card-content" style="height:450px;">
-              <div class="col s6">
-                <img style="width:100%" :src="house.image" alt="">
-              </div>
-              <div class="col s6">
-                <p>Name: <em>{{ house.name }}</em></p>
-                <p>Specification: <em>{{ house.spec }}</em></p>
-                <p>Published At: <em>{{ house.createdAt }}</em></p>
-              </div>
-              <div class="col-s12">
-                <div :id="'map_'+house._id">
+            <div class="card-stacked">
+              <div class="card-content" style="height:450px;">
+                <div class="col s6">
+                  <img style="width:100%; border-radius:20px;" :src="house.image" alt="">
+                </div>
+                <div class="col s6">
+                  <div class="col s4" style="font-family: josefin sans; font-size:18px;">
+                    <p>Name:</p>
+                    <p>Specification:</p>
+                    <p>Published At:</p>
+                    <p>Price:</p>
+                  </div>
+                  <div class="col s8" style="font-family: josefin sans; font-size:18px;">
+                    <p>{{ house.name }}</p>
+                    <p>{{ house.spec }}</p>
+                    <p>{{ house.createdAt }}</p>
+                    <p>Rp. {{ house.price }}</p>
+                  </div>
+                  <button class="waves-effect waves-light btn" style="margin-top:50%" @click="getUpdateData(house._id, house.name, house.price, house.spec, house.image, house.lat, house.lng)" data-target="modal1"><i class="material-icons left">update</i>Update</button>
+                  <button class="waves-effect waves-light red darken-1 btn" style="margin-top:50%; margin-left:2%" @click="deleteHouse(house._id)"><i class="material-icons left">delete</i>Delete</button>
+                </div>
+                <div class="col-s12">
+                  <div id="map_get">
 
+                  </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
-
   </div>
 
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <div class="collapsible-header"><i class="fa fa-home" aria-hidden="true"></i>Update House</div>
+        <div class="row" style="margin-top:25px;">
+          <div class="input-field col s6">
+            <input placeholder="Please input your name" id="edit_name" type="text" class="validate">
+            <label for="edit_name">Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="edit_price" placeholder="Input the house price" type="number" class="validate">
+            <label for="edit_price">Price</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input placeholder="House Specification" id="edit_spec" type="text" class="validate">
+            <label for="edit_spec">Specification</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="edit_image" placeholder="Input the URL of the house image" type="text" class="validate">
+            <label for="edit_image">House Image</label>
+          </div>
+        </div>
+        <div id="mapUpdate" style="margin-left:8%; width:80%; height:300px;"></div>
+        <a class="waves-effect waves-light btn" @click="updateHouse" style="margin-top:7%"><i class="material-icons left">update</i>Update</a>
+      </div>
+    </div>
+
+
+    <!-- <div id="modal2" class="modal">
+      <div class="modal-content">
+        <div class="collapsible-header"><i class="fa fa-home" aria-hidden="true"></i>Update House</div>
+        <div class="row" style="margin-top:25px;">
+          <div class="input-field col s6">
+            <input placeholder="Please input your name" id="edit_name" type="text" class="validate">
+            <label for="edit_name">Name</label>
+          </div>
+          <div class="input-field col s6">
+            <input id="edit_price" placeholder="Input the house price" type="number" class="validate">
+            <label for="edit_price">Price</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input placeholder="House Specification" id="edit_spec" type="text" class="validate">
+            <label for="edit_spec">Specification</label>
+          </div>
+        </div>
+        <div class="row">
+          <div class="input-field col s12">
+            <input id="edit_image" placeholder="Input the URL of the house image" type="text" class="validate">
+            <label for="edit_image">House Image</label>
+          </div>
+        </div>
+        <div id="mapUpdate" style="margin-left:8%; width:80%; height:300px;"></div>
+        <a class="waves-effect waves-light btn" @click="updateHouse" style="margin-top:7%"><i class="material-icons left">update</i>Update</a>
+      </div>
+    </div> -->
+
   </div>
+  </div>
+
+
 
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -104,12 +180,19 @@
   <script src="https://unpkg.com/vue/dist/vue.js"></script>
 
   <script>
-  let lat = 0; lng = 0;
+  $(document).ready(function(){
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal').modal();
+  });
+  </script>
+  <script>
+  let lat = 0; lng = 0, editlat = 0, editlng = 0;
 
   var app = new Vue({
     el: '#app',
     data: {
       houses: [],
+      index: 0,
     },
     methods: {
       getHouses: function() {
@@ -136,19 +219,91 @@
             lng: lng
           },
           success: function(res) {
-            console.log(res, lat, lng);
             app.houses.push(res)
+            app.getHouses()
           }
         })
       },
-      deleteHouse: function() {
+      deleteHouse: function(id) {
         $.ajax({
-          type: 'DELETE'
+          type: 'DELETE',
+          url: 'http://localhost:3000/api/houses/'+id,
+          dataType: 'json',
+          success: function() {
+            app.getHouses()
+          }
+        })
+      },
+      getUpdateData: function(id, name, price, spec, img, lat, lng) {
+        $('#edit_name').val(name)
+        $('#edit_price').val(price)
+        $('#edit_spec').val(spec)
+        $('#edit_image').val(img)
+
+        setTimeout(function(){
+          var updateMap = new GMaps({
+            el: '#mapUpdate',
+            lat: lat,
+            lng: lng
+          });
+
+          updateMap.addMarker({
+            lat: lat,
+            lng: lng,
+            click: function(e) {
+              alert('You clicked in this marker');
+            }
+          });
+
+          GMaps.on('click', updateMap.map, function(event) {
+             var index = updateMap.markers.length;
+             editlat = event.latLng.lat();
+             editlng = event.latLng.lng();
+             console.log(editlat, editlng);
+             updateMap.removeMarkers()
+             updateMap.addMarker({
+               lat: editlat,
+               lng: editlng,
+               infoWindow: {
+                 content: '<p>HTML Content</p>'
+               }
+             });
+           })
+        }, 1000)
+
+        localStorage.setItem('id', id)
+      },
+      updateHouse: function() {
+        let id = localStorage.getItem('id')
+        console.log(id);
+        console.log($('#edit_name').val());
+        $.ajax({
+          type: 'PUT',
+          url: 'http://localhost:3000/api/houses/'+id,
+          dataType: 'json',
+          data: {
+            name: $('#edit_name').val(),
+            price: $('#edit_price').val(),
+            spec: $('#edit_spec').val(),
+            image: $('#edit_image').val(),
+            lat: editlat,
+            lng: editlng
+          },
+          success: function(res) {
+            app.getHouses()
+          }
         })
       }
     }
   })
+
   app.getHouses()
+
+
+
+
+
+
 
   $('#open_form').click(function(){
     setTimeout(function(){
@@ -162,8 +317,7 @@
          var index = map.markers.length;
          lat = event.latLng.lat();
          lng = event.latLng.lng();
-         console.log(lat);
-         console.log(lng);
+         console.log(lat,lng);
          map.removeMarkers()
          map.addMarker({
            lat: lat,
@@ -175,6 +329,31 @@
        })
     }, 1000)
   })
+
+  // function getUpdateMap() {
+  //   setTimeout(function(){
+  //     var updateMap = new GMaps({
+  //       el: '#mapUpdate',
+  //       lat: -6.252847984958682,
+  //       lng: 106.81172668933868
+  //     });
+  //
+  //     GMaps.on('click', updateMap.map, function(event) {
+  //        var index = updateMap.markers.length;
+  //        editlat = event.latLng.lat();
+  //        editlng = event.latLng.lng();
+  //        console.log(editlat, editlng);
+  //        updateMap.removeMarkers()
+  //        updateMap.addMarker({
+  //          lat: editlat,
+  //          lng: editlng,
+  //          infoWindow: {
+  //            content: '<p>HTML Content</p>'
+  //          }
+  //        });
+  //      })
+  //   }, 1000)
+  // }
 
 
   </script>

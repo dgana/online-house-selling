@@ -62,7 +62,7 @@ module.exports = {
         })
       }
 
-      houses.name = req.body.name || houses.name;      houses.price = req.body.price || houses.price;      houses.createdAt = req.body.createdAt || houses.createdAt;      houses.spec = req.body.spec || houses.spec;      houses.image = req.body.image || houses.image;      houses.lat = req.body.lat || houses.lat
+      houses.name = req.body.name || houses.name;      houses.price = req.body.price || houses.price;      houses.createdAt = new Date() || houses.createdAt;      houses.spec = req.body.spec || houses.spec;      houses.image = req.body.image || houses.image;      houses.lat = req.body.lat || houses.lat
       houses.lng = req.body.lng || houses.lng
 
       houses.save(function (err, houses) {
