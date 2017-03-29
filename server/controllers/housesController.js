@@ -1,6 +1,20 @@
 var housesModel = require('../models/housesModel.js')
+const seedData = require('../seed/houseSeed')
+const mongoose = require('mongoose')
 
 module.exports = {
+  seed: function(req, res) {
+    mongoose.connection.db.dropCollection('houses', (err, result) => {
+      if (err) throw err
+      console.log('Dropped collection: houses')
+    })
+
+    housesModel.create(seedData, (err, houses) => {
+      if (err) throw err
+      res.json(houses)
+    })
+  },
+
   list: function (req, res) {
     housesModel.find(function (err, houses) {
       if (err) {

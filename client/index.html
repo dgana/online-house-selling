@@ -3,7 +3,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0"/>
-  <title>Starter Template - Materialize</title>
+  <title>Online House Selling</title>
 
   <!-- CSS  -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -73,7 +73,7 @@
         <div class="col s12">
           <div class="card white">
             <div class="card-stacked">
-              <div class="card-content" style="height:450px;">
+              <div class="card-content" style="min-height:520px;">
                 <div class="col s6">
                   <img style="width:100%; border-radius:20px;" :src="house.image" alt="">
                 </div>
@@ -87,7 +87,7 @@
                   <div class="col s8" style="font-family: josefin sans; font-size:18px;">
                     <p>{{ house.name }}</p>
                     <p>{{ house.spec }}</p>
-                    <p>{{ house.createdAt }}</p>
+                    <p>{{ house.createdAt.slice(0,10) }}</p>
                     <p>Rp. {{ house.price }}</p>
                   </div>
                   <button class="waves-effect waves-light btn" style="margin-top:50%" @click="getUpdateData(house._id, house.name, house.price, house.spec, house.image, house.lat, house.lng)" data-target="modal1"><i class="material-icons left">update</i>Update</button>
@@ -134,39 +134,7 @@
         <a class="waves-effect waves-light btn" @click="updateHouse" style="margin-top:7%"><i class="material-icons left">update</i>Update</a>
       </div>
     </div>
-
-
-    <!-- <div id="modal2" class="modal">
-      <div class="modal-content">
-        <div class="collapsible-header"><i class="fa fa-home" aria-hidden="true"></i>Update House</div>
-        <div class="row" style="margin-top:25px;">
-          <div class="input-field col s6">
-            <input placeholder="Please input your name" id="edit_name" type="text" class="validate">
-            <label for="edit_name">Name</label>
-          </div>
-          <div class="input-field col s6">
-            <input id="edit_price" placeholder="Input the house price" type="number" class="validate">
-            <label for="edit_price">Price</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input placeholder="House Specification" id="edit_spec" type="text" class="validate">
-            <label for="edit_spec">Specification</label>
-          </div>
-        </div>
-        <div class="row">
-          <div class="input-field col s12">
-            <input id="edit_image" placeholder="Input the URL of the house image" type="text" class="validate">
-            <label for="edit_image">House Image</label>
-          </div>
-        </div>
-        <div id="mapUpdate" style="margin-left:8%; width:80%; height:300px;"></div>
-        <a class="waves-effect waves-light btn" @click="updateHouse" style="margin-top:7%"><i class="material-icons left">update</i>Update</a>
-      </div>
-    </div> -->
-
-  </div>
+    </div>
   </div>
 
 
@@ -185,6 +153,7 @@
     $('.modal').modal();
   });
   </script>
+
   <script>
   let lat = 0; lng = 0, editlat = 0, editlng = 0;
 
@@ -202,6 +171,17 @@
           dataType: 'json',
           success: function(res) {
             app.houses = res
+          }
+        })
+      },
+      seed: function() {
+        $.ajax({
+          type: 'POST',
+          url: 'http://localhost:3000/api/houses/seed',
+          dataType: 'json',
+          success: function(res) {
+            app.houses.push(res)
+            app.getHouses()
           }
         })
       },
@@ -296,14 +276,8 @@
       }
     }
   })
-
+  app.seed()
   app.getHouses()
-
-
-
-
-
-
 
   $('#open_form').click(function(){
     setTimeout(function(){
@@ -329,32 +303,6 @@
        })
     }, 1000)
   })
-
-  // function getUpdateMap() {
-  //   setTimeout(function(){
-  //     var updateMap = new GMaps({
-  //       el: '#mapUpdate',
-  //       lat: -6.252847984958682,
-  //       lng: 106.81172668933868
-  //     });
-  //
-  //     GMaps.on('click', updateMap.map, function(event) {
-  //        var index = updateMap.markers.length;
-  //        editlat = event.latLng.lat();
-  //        editlng = event.latLng.lng();
-  //        console.log(editlat, editlng);
-  //        updateMap.removeMarkers()
-  //        updateMap.addMarker({
-  //          lat: editlat,
-  //          lng: editlng,
-  //          infoWindow: {
-  //            content: '<p>HTML Content</p>'
-  //          }
-  //        });
-  //      })
-  //   }, 1000)
-  // }
-
 
   </script>
   </body>
