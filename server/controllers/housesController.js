@@ -1,5 +1,5 @@
-var housesModel = require('../models/housesModel.js')
-const seedData = require('../seed/houseSeed')
+const housesModel = require('../models/housesModel.js')
+const seedData = require('../seed/houseSeed.js')
 const mongoose = require('mongoose')
 
 module.exports = {

@@ -14,7 +14,6 @@ db.once('open', function () {
 })
 
 mongoose.connect('mongodb://localhost/house')
-mongoose.Promise = global.Promise
 
 var index = require('./routes/index')
 var users = require('./routes/users')
