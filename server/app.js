@@ -7,13 +7,13 @@ var bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
-var db = mongoose.connection
-db.on('error', console.error.bind(console, 'connection error:'))
-db.once('open', function () {
-  console.log('Database Connected')
-})
+mongoose.connect('mongodb://localhost/house');
 
-mongoose.connect('mongodb://localhost/house')
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('Database Connected');
+});
 
 var index = require('./routes/index')
 var users = require('./routes/users')

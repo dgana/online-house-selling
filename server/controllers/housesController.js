@@ -1,19 +1,34 @@
 const housesModel = require('../models/housesModel.js')
-const seedData = require('../seed/houseSeed.js')
+const seedData = require('../seeder/houseSeed')
 const mongoose = require('mongoose')
 
 module.exports = {
-  seed: function(req, res) {
-    mongoose.connection.db.dropCollection('houses', (err, result) => {
-      if (err) throw err
-      console.log('Dropped collection: houses')
-    })
-
-    housesModel.create(seedData, (err, houses) => {
-      if (err) throw err
-      res.json(houses)
+  seed: function (req, res) {
+    housesModel.find(function (err, houses) {
+      if (err) {
+        return res.status(500).json({
+          message: 'Error when getting houses.',
+          error: err
+        })
+      }
+      if (houses.length !== 0) {
+        mongoose.connection.db.dropCollection('houses', (err, result) => {
+          if (err) throw err
+          console.log('Dropped collection: houses')
+        })
+        housesModel.create(seedData, (err, houses) => {
+          if (err) throw err
+          res.json(houses)
+        })
+      } else {
+        housesModel.create(seedData, (err, houses) => {
+          if (err) throw err
+          res.json(houses)
+        })
+      }
     })
   },
+
 
   list: function (req, res) {
     housesModel.find(function (err, houses) {
